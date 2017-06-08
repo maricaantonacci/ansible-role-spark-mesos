@@ -1,0 +1,75 @@
+---
+# tasks file for spark-mesos
+
+- name: "[Spark-Mesos] Check if the group is already present"
+  run_once: true
+  uri: 
+     url: "{{marathon_protocol}}://marathon.service.consul:{{marathon_port}}/v2/groups/spark"
+     user: "{{marathon_username}}"
+     password: "{{marathon_password}}"
+     validate_certs: "no"
+     method: GET
+     status_code: 200, 404
+  register: get_result
+  tags:
+    - spark
+
+
+- name: debug
+  debug: var=get_result
+  tags:
+    - spark
+
+- name: debug
+  debug: msg="{{ lookup('template', 'templates/group.json') }}"
+  tags:
+   - spark
+  
+
+- name: "[Spark-Mesos] deploy containers on Marathon"
+  run_once: true
+  uri: 
+     url: "{{marathon_protocol}}://marathon.service.consul:{{marathon_port}}/v2/groups"
+     user: "{{marathon_username}}"
+     password: "{{marathon_password}}"
+     validate_certs: "no"
+     method: POST
+     HEADER_Content-Type: "application/json"
+     body: "{{ lookup('template', 'templates/group.json') }}"
+     body_format: json
+     status_code: 201
+  register: post_result
+  when: get_result.status == 404
+  tags:
+    - spark
+
+
+- name: debug
+  debug: var=post_result
+  tags:
+    - spark
+
+- name: "[Spark-Mesos] Update the Marathon group if already present"
+  run_once: true
+  uri:
+     url: "{{marathon_protocol}}://marathon.service.consul:{{marathon_port}}/v2/groups"
+     user: "{{marathon_username}}"
+     password: "{{marathon_password}}"
+     validate_certs: "no"
+     method: PUT
+     HEADER_Content-Type: "application/json"
+     body: "{{ lookup('template', 'templates/group.json') }}"
+     body_format: json
+     status_code: 200
+  register: put_result
+  when: get_result.status == 200
+  tags:
+    - dariah
+
+- name: debug
+  debug: var=put_result
+  tags:
+    - spark
+
+
+  

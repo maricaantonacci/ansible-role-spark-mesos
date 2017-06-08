@@ -1,0 +1,8 @@
+{
+  "id": "spark",
+  "apps": 
+  [
+{% include 'spark-dispatcher.json' %},
+{% include 'apache-zeppelin.json' %}
+  ]
+}

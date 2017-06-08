@@ -1,0 +1,42 @@
+---
+# defaults file for spark-mesos
+marathon_username: admin
+marathon_port: 8080
+marathon_protocol: http
+zookeeper_client_port: 2181
+zookeeper_server_group: zookeeper_servers
+
+zookeeper_peers_nodes: "
+	{%- if zookeeper_peers is defined -%}
+            {% for host in zookeeper_peers %}{{host}}:{{zookeeper_client_port}}{% if not loop.last %},{% endif %}{% endfor %}
+	{%- else -%}
+            {%- for host in groups[zookeeper_server_group] -%}{{hostvars[host]['ansible_default_ipv4']['address']}}:{{zookeeper_client_port}}{% if not loop.last %},{% endif %}{% endfor %} 
+	{%- endif -%}
+"
+
+
+spark_mesos_dispatcher_master_uri: "mesos://zk://{{ zookeeper_peers_nodes }}/mesos"
+spark_mesos_dispatcher_zk_url: "{{zookeeper_peers_nodes}}"
+spark_mesos_dispatcher_framework_name: spark
+spark_mesos_image: marica/spark-mesos
+spark_mesos_dispatcher_port: 7070
+spark_mesos_dispatcher_webui_port: 7077
+
+spark_mesos_zeppelin_master_uri: "{{spark_mesos_dispatcher_master_uri}}"
+spark_mesos_zeppelin_image: marica/apache-zeppelin
+spark_mesos_zeppelin_port: 8081
+spark_mesos_zeppelin_admin_password: s3cret
+
+spark_mesos_hdfs_uri: ''
+
+spark_mesos_swift_auth_url: ''
+spark_mesos_swift_http_port: 8080
+spark_mesos_swift_region: ''
+spark_mesos_swift_tenant: ''
+spark_mesos_swift_username: ''
+spark_mesos_swift_password: ''
+spark_mesos_swift_provider: "Test"
+
+##
+spark_mesos_dispatcher_haproxy_group: external
+spark_mesos_zeppelin_haproxy_group: external

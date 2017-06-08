@@ -1,0 +1,49 @@
+{
+  "id": "apache-zeppelin",
+  "cpus": 2,
+  "mem": 2048,
+  "instances": 1,
+  "container":{
+    "type" : "DOCKER",
+    "docker": {
+      "image" : "{{spark_mesos_zeppelin_image}}",
+      "forcePullImage": true,
+      "network": "HOST"
+    }
+  },
+  "portDefinitions": [
+     {"port": {{spark_mesos_zeppelin_port}}  }
+   ],
+  "env": {
+     "MASTER":"{{spark_mesos_zeppelin_master_uri}}",
+     "SPARK_SUBMIT_OPTIONS":"\"--conf spark.mesos.executor.docker.image={{spark_mesos_image}}\"",
+     "ZEPPELIN_PORT":"$PORT0",
+     "ADMIN_PASSWORD":"{{spark_mesos_zeppelin_admin_password}}",
+     "HDFS_URI":"{{spark_mesos_hdfs_uri}}",
+     "KEYSTONE_AUTH_URL":"{{spark_mesos_swift_auth_url}}",
+     "SWIFT_HTTP_PORT":"{{spark_mesos_swift_http_port}}",
+     "SWIFT_REGION":"{{spark_mesos_swift_region}}",
+     "SWIFT_TENANT":"{{spark_mesos_swift_tenant}}",
+     "SWIFT_USERNAME":"{{spark_mesos_swift_username}}",
+     "SWIFT_PASSWORD":"{{spark_mesos_swift_password}}",
+     "SWIFT_PROVIDER":"{{spark_mesos_swift_provider}}"
+  },
+  "labels":{
+      "HAPROXY_GROUP":"{{spark_mesos_zeppelin_haproxy_group}}"
+  },
+  "dependencies": [ "/spark/spark-mesos-dispatcher" ],
+  "healthChecks": [
+    {
+      "gracePeriodSeconds": 300,
+      "intervalSeconds": 60,
+      "timeoutSeconds": 20,
+      "maxConsecutiveFailures": 3,
+      "portIndex": 0,
+      "path": "/",
+      "protocol": "HTTP",
+      "ignoreHttp1xx": false
+    }
+  ]
+
+}
+
