@@ -1,10 +1,12 @@
 ---
 # tasks file for spark-mesos
 
-- name: "[Spark-Mesos] Check if the group is already present"
+- set_fact: app_name="{{spark_mesos_deploy_app}}"
+
+- name: "[Spark-Mesos] Check if the app is already present"
   run_once: true
   uri: 
-     url: "{{marathon_protocol}}://marathon.service.consul:{{marathon_port}}/v2/groups/spark"
+     url: "{{marathon_protocol}}://marathon.service.consul:{{marathon_port}}/v2/apps/{{app_name}}"
      user: "{{marathon_username}}"
      password: "{{marathon_password}}"
      validate_certs: "no"
@@ -20,22 +22,17 @@
   tags:
     - spark
 
-- name: debug
-  debug: msg="{{ lookup('template', 'templates/group.json') }}"
-  tags:
-   - spark
-  
 
-- name: "[Spark-Mesos] deploy containers on Marathon"
+- name: "[Spark-Mesos] deploy app container on Marathon"
   run_once: true
-  uri: 
-     url: "{{marathon_protocol}}://marathon.service.consul:{{marathon_port}}/v2/groups"
+  uri:
+     url: "{{marathon_protocol}}://marathon.service.consul:{{marathon_port}}/v2/apps"
      user: "{{marathon_username}}"
      password: "{{marathon_password}}"
      validate_certs: "no"
      method: POST
      HEADER_Content-Type: "application/json"
-     body: "{{ lookup('template', 'templates/group.json') }}"
+     body: "{{ lookup('template', 'templates/{{app_name}}.json') }}"
      body_format: json
      status_code: 201
   register: post_result
@@ -44,27 +41,33 @@
     - spark
 
 
+
+- name: debug
+  debug: msg="{{ lookup('template', 'templates/{{app_name}}.json') }}"
+  tags:
+   - spark
+  
 - name: debug
   debug: var=post_result
   tags:
     - spark
 
-- name: "[Spark-Mesos] Update the Marathon group if already present"
+- name: "[Spark-Mesos] Update the Marathon app if already present"
   run_once: true
   uri:
-     url: "{{marathon_protocol}}://marathon.service.consul:{{marathon_port}}/v2/groups"
+     url: "{{marathon_protocol}}://marathon.service.consul:{{marathon_port}}/v2/apps/{{app_name}}"
      user: "{{marathon_username}}"
      password: "{{marathon_password}}"
      validate_certs: "no"
      method: PUT
      HEADER_Content-Type: "application/json"
-     body: "{{ lookup('template', 'templates/group.json') }}"
+     body: "{{ lookup('template', 'templates/{{app_name}}.json') }}"
      body_format: json
      status_code: 200
   register: put_result
   when: get_result.status == 200
   tags:
-    - dariah
+    - spark
 
 - name: debug
   debug: var=put_result

@@ -1,5 +1,5 @@
 {
-  "id": "apache-zeppelin",
+  "id": "/apache-zeppelin",
   "cpus": 2,
   "mem": 2048,
   "instances": 1,
@@ -16,7 +16,8 @@
    ],
   "env": {
      "MASTER":"{{spark_mesos_zeppelin_master_uri}}",
-     "SPARK_SUBMIT_OPTIONS":"\"--conf spark.mesos.executor.docker.image={{spark_mesos_image}}\"",
+     "SPARK_SUBMIT_OPTIONS":"\"\"",
+     "ZEPPELIN_JAVA_OPTS":"\"-Dspark.cores.max={{spark_mesos_cores_max}}\"",
      "ZEPPELIN_PORT":"$PORT0",
      "ADMIN_PASSWORD":"{{spark_mesos_zeppelin_admin_password}}",
      "HDFS_URI":"{{spark_mesos_hdfs_uri}}",
@@ -26,12 +27,17 @@
      "SWIFT_TENANT":"{{spark_mesos_swift_tenant}}",
      "SWIFT_USERNAME":"{{spark_mesos_swift_username}}",
      "SWIFT_PASSWORD":"{{spark_mesos_swift_password}}",
-     "SWIFT_PROVIDER":"{{spark_mesos_swift_provider}}"
+     "SWIFT_PROVIDER":"{{spark_mesos_swift_provider}}",
+     "SPARK_DRIVER_CORES":"{{spark_mesos_driver_cores}}",
+     "SPARK_DRIVER_MEM":"{{spark_mesos_driver_memory}}",
+     "SPARK_EXECUTOR_CORES":"{{spark_mesos_executor_cores}}",
+     "SPARK_EXECUTOR_MEM":"{{spark_mesos_executor_memory}}",
+     "SPARK_CORES_MAX":"{{spark_mesos_cores_max}}",
+     "SPARK_MESOS_EXECUTOR_DOCKER_IMAGE":"{{spark_mesos_executor_docker_image}}"
   },
   "labels":{
       "HAPROXY_GROUP":"{{spark_mesos_zeppelin_haproxy_group}}"
   },
-  "dependencies": [ "/spark/spark-mesos-dispatcher" ],
   "healthChecks": [
     {
       "gracePeriodSeconds": 300,

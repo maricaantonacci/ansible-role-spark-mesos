@@ -1,5 +1,5 @@
 {
-  "id": "spark-mesos-dispatcher",
+  "id": "/spark-dispatcher",
   "cpus": 2,
   "mem": 2048,
   "instances": 1,
@@ -10,6 +10,14 @@
       "image" : "{{spark_mesos_image}}",
       "network": "HOST"
     }
+  },
+  "env": {
+     "SPARK_DRIVER_CORES":"{{spark_mesos_driver_cores}}",
+     "SPARK_DRIVER_MEM":"{{spark_mesos_driver_memory}}",
+     "SPARK_EXECUTOR_CORES":"{{spark_mesos_executor_cores}}",
+     "SPARK_EXECUTOR_MEM":"{{spark_mesos_executor_memory}}",
+     "SPARK_CORES_MAX":"{{spark_mesos_cores_max}}",
+     "SPARK_MESOS_EXECUTOR_DOCKER_IMAGE":"{{spark_mesos_executor_docker_image}}"
   },
   "portDefinitions": [
      {"port": {{spark_mesos_dispatcher_port}} }, {"port": {{spark_mesos_dispatcher_webui_port}} }
