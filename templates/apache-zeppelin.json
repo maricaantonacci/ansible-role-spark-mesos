@@ -17,7 +17,9 @@
   "env": {
      "MASTER":"{{spark_mesos_zeppelin_master_uri}}",
      "SPARK_SUBMIT_OPTIONS":"\"\"",
+{% if spark_mesos_cores_max is defined and spark_mesos_cores_max != '' %}
      "ZEPPELIN_JAVA_OPTS":"\"-Dspark.cores.max={{spark_mesos_cores_max}}\"",
+{% endif %}
      "ZEPPELIN_PORT":"$PORT0",
      "ADMIN_PASSWORD":"{{spark_mesos_zeppelin_admin_password}}",
      "HDFS_URI":"{{spark_mesos_hdfs_uri}}",
