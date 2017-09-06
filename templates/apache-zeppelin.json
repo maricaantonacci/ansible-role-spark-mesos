@@ -22,7 +22,7 @@
 {% endif %}
      "ZEPPELIN_PORT":"$PORT0",
      "ADMIN_PASSWORD":"{{spark_mesos_zeppelin_admin_password}}",
-     "HDFS_URI":"{{ (spark_mesos_hdfs_uri != None) | ternary(spark_mesos_hdfs_uri, '') }}",
+     "HDFS_URI":"{{ (( spark_mesos_hdfs_uri != None) and (spark_mesos_hdfs_uri != 'None')) | ternary(spark_mesos_hdfs_uri, '') }}",
      "KEYSTONE_AUTH_URL":"{{spark_mesos_swift_auth_url}}",
      "SWIFT_HTTP_PORT":"{{spark_mesos_swift_http_port}}",
      "SWIFT_REGION":"{{spark_mesos_swift_region}}",
