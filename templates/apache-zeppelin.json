@@ -17,12 +17,12 @@
   "env": {
      "MASTER":"{{spark_mesos_zeppelin_master_uri}}",
      "SPARK_SUBMIT_OPTIONS":"\"\"",
-{% if spark_mesos_cores_max is defined and spark_mesos_cores_max != '' %}
+{% if spark_mesos_cores_max != -1 %}
      "ZEPPELIN_JAVA_OPTS":"\"-Dspark.cores.max={{spark_mesos_cores_max}}\"",
 {% endif %}
      "ZEPPELIN_PORT":"$PORT0",
      "ADMIN_PASSWORD":"{{spark_mesos_zeppelin_admin_password}}",
-     "HDFS_URI":"{{ (( spark_mesos_hdfs_uri != None) and (spark_mesos_hdfs_uri != 'None')) | ternary(spark_mesos_hdfs_uri, '') }}",
+     "HDFS_URI":"{{ spark_mesos_hdfs_uri }}",
      "KEYSTONE_AUTH_URL":"{{spark_mesos_swift_auth_url}}",
      "SWIFT_HTTP_PORT":"{{spark_mesos_swift_http_port}}",
      "SWIFT_REGION":"{{spark_mesos_swift_region}}",
@@ -32,9 +32,9 @@
      "SWIFT_PROVIDER":"{{spark_mesos_swift_provider}}",
      "SPARK_DRIVER_CORES":"{{spark_mesos_driver_cores}}",
      "SPARK_DRIVER_MEM":"{{spark_mesos_driver_memory}}",
-     "SPARK_EXECUTOR_CORES":"{{spark_mesos_executor_cores}}",
+     "SPARK_EXECUTOR_CORES":"{{ (spark_mesos_executor_cores != -1) | ternary(spark_mesos_executor_cores, '') }}",
      "SPARK_EXECUTOR_MEM":"{{spark_mesos_executor_memory}}",
-     "SPARK_CORES_MAX":"{{spark_mesos_cores_max}}",
+     "SPARK_CORES_MAX":"{{ (spark_mesos_cores_max != -1 ) | ternary(spark_mesos_cores_max,'') }}",
      "SPARK_MESOS_EXECUTOR_DOCKER_IMAGE":"{{spark_mesos_executor_docker_image}}"
   },
   "labels":{
