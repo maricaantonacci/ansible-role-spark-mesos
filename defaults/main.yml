@@ -42,8 +42,8 @@ spark_mesos_swift_provider: "Test"
 ####
 # Spark properties
 ####
-spark_mesos_cores_max: ''
-spark_mesos_executor_cores: ''
+spark_mesos_cores_max: -1
+spark_mesos_executor_cores: -1
 spark_mesos_executor_memory: 1G
 spark_mesos_driver_memory: 1G
 spark_mesos_driver_cores: 1
