@@ -1,8 +1,8 @@
 ---
 # defaults file for spark-mesos
 marathon_username: admin
-marathon_port: 8080
-marathon_protocol: http
+marathon_port: 8443
+marathon_protocol: https
 zookeeper_client_port: 2181
 zookeeper_server_group: zookeeper_servers
 
@@ -20,7 +20,7 @@ spark_mesos_deploy_app: "apache-zeppelin" #valid values: 'apache-zeppelin', 'spa
 spark_mesos_dispatcher_master_uri: "mesos://zk://{{ zookeeper_peers_nodes }}/mesos"
 spark_mesos_dispatcher_zk_url: "{{zookeeper_peers_nodes}}"
 spark_mesos_dispatcher_framework_name: spark
-spark_mesos_image: marica/spark-mesos
+spark_mesos_image: dodasts/mesos-spark
 spark_mesos_dispatcher_port: 7070
 spark_mesos_dispatcher_webui_port: 7077
 
@@ -47,7 +47,7 @@ spark_mesos_executor_cores: -1
 spark_mesos_executor_memory: 1G
 spark_mesos_driver_memory: 1G
 spark_mesos_driver_cores: 1
-spark_mesos_executor_docker_image: marica/spark-mesos
+spark_mesos_executor_docker_image: dodasts/mesos-spark
 
 ## Don't change the following parameters 
 spark_mesos_dispatcher_haproxy_group: external

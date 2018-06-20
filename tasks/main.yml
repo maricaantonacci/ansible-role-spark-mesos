@@ -3,6 +3,15 @@
 
 - set_fact: app_name="{{spark_mesos_deploy_app}}"
 
+
+- name: ping marathon consul to check if it is ready
+  shell: "curl --silent -k -u {{marathon_username}}:{{marathon_password}} {{marathon_protocol}}://marathon.service.consul:{{marathon_port}}/ping"
+  register: result_ping
+  until: result_ping.stdout.find("pong") != -1
+  retries: 20
+  delay: 30
+
+
 - name: "[Spark-Mesos] Check if the app is already present"
   run_once: true
   uri: 
@@ -19,6 +28,11 @@
 
 - name: debug
   debug: var=get_result
+  tags:
+    - spark
+
+- name: debug zookeeper
+  debug: var=zookeeper_peers_nodes
   tags:
     - spark
 
@@ -40,6 +54,23 @@
   tags:
     - spark
 
+
+- name: "[Spark-Mesos] deploy tunnel app container on Marathon"
+  run_once: true
+  uri:
+     url: "{{marathon_protocol}}://marathon.service.consul:{{marathon_port}}/v2/apps"
+     user: "{{marathon_username}}"
+     password: "{{marathon_password}}"
+     validate_certs: "no"
+     method: POST
+     HEADER_Content-Type: "application/json"
+     body: "{{ lookup('template', 'templates/spark-tunnel.json') }}"
+     body_format: json
+     status_code: 201
+  register: post_result
+  when: spark_mesos_deploy_app == "spark-dispatcher"
+  tags:
+    - spark
 
 
 - name: debug

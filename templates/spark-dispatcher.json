@@ -3,39 +3,14 @@
   "cpus": 2,
   "mem": 2048,
   "instances": 1,
-  "cmd": "export SPARK_PUBLIC_DNS=$HOST && ./bin/spark-class org.apache.spark.deploy.mesos.MesosClusterDispatcher --port $PORT0 --webui-port $PORT1 --master {{spark_mesos_dispatcher_master_uri}} --zk {{spark_mesos_dispatcher_zk_url}} --host $HOST --name {{spark_mesos_dispatcher_framework_name}}",
   "container":{
     "type" : "DOCKER",
     "docker": {
-      "image" : "{{spark_mesos_image}}",
+      "image" : "{{spark_mesos_image}}:bastion",
       "network": "HOST"
     }
   },
   "env": {
-     "SPARK_DRIVER_CORES":"{{spark_mesos_driver_cores}}",
-     "SPARK_DRIVER_MEM":"{{spark_mesos_driver_memory}}",
-     "SPARK_EXECUTOR_CORES":"{{spark_mesos_executor_cores}}",
-     "SPARK_EXECUTOR_MEM":"{{spark_mesos_executor_memory}}",
-     "SPARK_CORES_MAX":"{{spark_mesos_cores_max}}",
-     "SPARK_MESOS_EXECUTOR_DOCKER_IMAGE":"{{spark_mesos_executor_docker_image}}"
-  },
-  "portDefinitions": [
-     {"port": {{spark_mesos_dispatcher_port}} }, {"port": {{spark_mesos_dispatcher_webui_port}} }
-   ],
-  "labels":{
-      "HAPROXY_GROUP":"{{spark_mesos_dispatcher_haproxy_group}}"
-  },
-  "healthChecks": [
-    {
-      "gracePeriodSeconds": 300,
-      "intervalSeconds": 60,
-      "timeoutSeconds": 20,
-      "maxConsecutiveFailures": 3,
-      "portIndex": 1,
-      "path": "/",
-      "protocol": "HTTP",
-      "ignoreHttp1xx": false
-    }
-  ]
+     "ZOOKEEPER_HOST_LIST":"{{zookeeper_peers_nodes}}"
+  }
 }
-
