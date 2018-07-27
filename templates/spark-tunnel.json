@@ -1,0 +1,72 @@
+{
+  "id": "/spark-tunnel",
+  "cpus": 0.1,
+  "mem": 32,
+  "disk": 0,
+  "instances": 1,
+  "acceptedResourceRoles": [
+    "*"
+  ],
+  "container": {
+    "type": "DOCKER",
+    "volumes": [],
+    "docker": {
+      "image": "dodasts/sshtunnel",
+      "network": "BRIDGE",
+      "portMappings": [
+        {
+          "containerPort": 22,
+          "hostPort": 0,
+          "servicePort": 34242,
+          "protocol": "tcp",
+          "name": "ssh",
+          "labels": {}
+        },
+        {
+          "containerPort": 31042,
+          "hostPort": 0,
+          "servicePort": 31042,
+          "protocol": "tcp",
+          "name": "sshtunnel",
+          "labels": {}
+        }
+      ],
+      "privileged": true,
+      "parameters": [],
+      "forcePullImage": true
+    }
+  },
+  "env": {
+      "ZOOKEEPER_HOST_LIST":"{{zookeeper_peers_nodes}}"
+  },
+  "healthChecks": [
+    {
+      "gracePeriodSeconds": 300,
+      "intervalSeconds": 60,
+      "timeoutSeconds": 20,
+      "maxConsecutiveFailures": 3,
+      "delaySeconds": 15,
+      "command": {
+        "value": "dodas_check_ssh_server && dodas_check_ssh_tunnel"
+      },
+      "protocol": "COMMAND"
+    }
+  ],
+  "labels": {
+    "HAPROXY_GROUP": "external"
+  },
+  "portDefinitions": [
+    {
+      "port": 34242,
+      "protocol": "tcp",
+      "name": "ssh",
+      "labels": {}
+    },
+    {
+      "port": 31042,
+      "protocol": "tcp",
+      "name": "sshtunnel",
+      "labels": {}
+    }
+  ]
+}
